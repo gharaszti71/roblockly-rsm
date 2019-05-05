@@ -101,6 +101,33 @@ class User {
     }
 
     /**
+     * Felhasználó módosítása
+     * @param {User} user Felhasználó módosult adatai
+     */
+    static async modify(user) {
+        return new Promise((resolve, reject) => {
+            const userToModify = users.find(u => u.id === user.id)
+            if (!userToModify) {
+                return reject('user does not exist')
+            }
+            userToModify.name = user.name
+            if (user.type !== UserType.Admin && user.type !== UserType.Service) {
+                throw new Error('Invalid user type!')
+            }
+            userToModify.type = user.type
+            if (userToModify.password !== user.password) {
+                userToModify.password = bcrypt.hashashSynch(password, 12)
+            }
+            users.forEach((u, i) => {
+                if (u.id === userToModify.id) {
+                    users[i] = userToModify
+                }
+            })
+            resolve(userToModify)
+        })
+    }
+
+    /**
      * Betölti a felhasználót az id alapján
      * @param {uuid} id Felhasználói egyedi azonosító
      */
@@ -113,11 +140,16 @@ class User {
     }
 
     /**
-     * Visszaadja valamennyi felhasználót
+     * Visszaadja valamennyi felhasználót (sensitive adatok nélkül)
      */
     static async getAll() {
         return new Promise((resolve, reject) => {
-            resolve(users)
+            const cloneUsers = [...users]
+            cloneUsers.forEach(u => {
+                delete u.password
+                delete u.sessions
+            })
+            resolve(cloneUsers)
         })
     }
 }
