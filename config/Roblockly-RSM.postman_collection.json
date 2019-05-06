@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Login / Useer",
+			"name": "Login / User",
 			"event": [
 				{
 					"listen": "test",
@@ -52,6 +52,52 @@
 			"response": []
 		},
 		{
+			"name": "Login / Service",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "afe28490-fd8f-412c-bd3a-4eff8d2121f0",
+						"exec": [
+							"if (pm.response.code == 200) {",
+							"    pm.environment.set('authToken', pm.response.json().token)",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"admin\",\n\t\"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/service/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"service",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create User",
 			"request": {
 				"method": "POST",
@@ -65,7 +111,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\":\"teszt admin\",\n\t\"type\":\"Admin\",\n\t\"password\":\"password\"\n}"
+					"raw": "{\n\t\"name\":\"teszt\",\n\t\"type\":\"Admin\",\n\t\"password\":\"password\"\n}"
 				},
 				"url": {
 					"raw": "{{url}}/users",
@@ -95,6 +141,57 @@
 					],
 					"path": [
 						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modify User",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"Teszt2\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/users/2ddab647-35b7-41bf-bd18-c9e488e4e6f5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"2ddab647-35b7-41bf-bd18-c9e488e4e6f5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/users/2ddab647-35b7-41bf-bd18-c9e488e4e6f5",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"2ddab647-35b7-41bf-bd18-c9e488e4e6f5"
 					]
 				}
 			},

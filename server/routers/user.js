@@ -66,7 +66,7 @@ router.patch('/users/:id', auth, async (req, res) => {
     }
 
     try {
-        const user = User.get(req.params.id)
+        const user = await User.get(req.params.id)
         if (!user) {
             throw new Error('User not found!')
         }

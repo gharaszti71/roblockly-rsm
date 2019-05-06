@@ -17,7 +17,6 @@ class User {
         }
         this.type = type
         this.password = bcrypt.hashSync(password, 12)
-        this.sessions = []
     }
 
     // id : uuid
@@ -147,7 +146,6 @@ class User {
             const cloneUsers = [...users]
             cloneUsers.forEach(u => {
                 delete u.password
-                delete u.sessions
             })
             resolve(cloneUsers)
         })
