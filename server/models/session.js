@@ -1,9 +1,12 @@
 const uuid  = require('uuid/v4')
+const Docker = require('dockerode')
 const Pool = require('./pool')
 
 const sessions = new Map();
 const urPool = new Pool(40000, 100)
 const rosPool = new Pool(50000, 100)
+const docker = new Docker({host: 'http://192.168.1.243', port: 2375})
+const imageName = 'capsule'
 
 class Session {
 
@@ -26,6 +29,15 @@ class Session {
 
             // this.urPort és this.rosPort mappelésével docker container indítása
             // proxy indítása az adott porttal ez a gép rosPort <-> container rosPort
+            docker.run(imageName, [], process.stdout, {
+                "name": session.sid,
+                "HostConfig": {
+                    "PortBindings": {
+                        "30002/tcp": [{"HostPort": "30002"}],
+                        "9090/tcp": [{"HostPort": "9090"}]
+                    }
+                }
+            });
 
             resolve(session)
         })
@@ -69,6 +81,10 @@ class Session {
             rosPool.drop(session.rosPort)
             sessions.delete(sid)
             // konténer elengedése
+            const container = docker.getContainer(sid);
+            if (container) {
+                container.stop().then(o => o.remove());
+            }
             resolve()
         })
     }
