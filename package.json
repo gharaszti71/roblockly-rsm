@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "dockerode": "^2.5.8",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "uuid": "^3.3.2"
