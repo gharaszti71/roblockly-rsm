@@ -1,5 +1,8 @@
+"use strict";
+
 const express = require('express')
 const auth = require('../middleware/auth')
+const User = require('../models/user')
 const UserType = require('../models/userType')
 const Session = require('../models/session')
 const router = new express.Router()

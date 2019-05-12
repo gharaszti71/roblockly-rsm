@@ -1,12 +1,16 @@
+"use strict";
+
 const uuid  = require('uuid/v4')
 const Docker = require('dockerode')
 const Pool = require('./pool')
-
+const config = require('./config')
 const sessions = new Map();
-const urPool = new Pool(40000, 100)
-const rosPool = new Pool(50000, 100)
-const docker = new Docker({host: 'http://192.168.1.243', port: 2375})
-const imageName = 'capsule'
+const urPool = new Pool(config.pools.UR.start, config.pools.UR.limit)
+const rosPool = new Pool(config.pools.ROS.start, config.pools.ROS.limit)
+const docker = new Docker({
+    host: config.dockerHosts[0].host, 
+    port: config.dockerHosts[0].port
+})
 
 class Session {
 
@@ -26,19 +30,17 @@ class Session {
         return new Promise((resolve, reject) => {
             const session = new Session(userId)
             sessions.set(session.sid, session)
-
-            // this.urPort és this.rosPort mappelésével docker container indítása
-            // proxy indítása az adott porttal ez a gép rosPort <-> container rosPort
-            docker.run(imageName, [], process.stdout, {
+    
+            docker.run(config.imageName, [], process.stdout, {
                 "name": session.sid,
                 "HostConfig": {
                     "PortBindings": {
-                        "30002/tcp": [{"HostPort": "30002"}],
-                        "9090/tcp": [{"HostPort": "9090"}]
+                        "30002/tcp": [{"HostPort": session.urPort.toString()}],
+                        "9090/tcp": [{"HostPort": session.rosPort.toString()}]
                     }
                 }
             });
-
+    
             resolve(session)
         })
     }

@@ -1,0 +1,19 @@
+{
+    "dockerHosts": [
+        {
+            "host": "http://192.168.1.141",
+            "port": 2375
+        }
+    ],
+    "pools": {
+        "UR": {
+            "start": 40000,
+            "limit": 100
+        },
+        "ROS": {
+            "start": 50000,
+            "limit": 100
+        }
+    },
+    "imageName": "capsule"
+}

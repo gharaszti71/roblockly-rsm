@@ -1,3 +1,5 @@
+"use strict";
+
 const UserType = {
     Admin:   'Admin',
     Service:  'Service'

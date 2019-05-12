@@ -1,10 +1,12 @@
+"use strict";
+
 const fs = require('fs')
 const path = require('path')
 const uuid  = require('uuid/v4')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const UserType = require('./userType')
-const configFilePath = path.join(__dirname, './../../config/users.json')
+const usersFilePath = path.join(__dirname, './../../config/users.json')
 let users = []
 
 class User {
@@ -45,7 +47,7 @@ class User {
      */
     static async load() {
         return new Promise((resolve, reject) => {
-            fs.readFile(configFilePath, async (err, data) => {
+            fs.readFile(usersFilePath, async (err, data) => {
                 if (err) {
                     users = []
                     await User.add('admin',UserType.Admin, 'password')
@@ -63,7 +65,7 @@ class User {
     static async save() {
         return new Promise((resolve, reject) => {
             const usersToSave = JSON.stringify(users)
-            fs.writeFile(configFilePath, usersToSave, (error) => {
+            fs.writeFile(usersFilePath, usersToSave, (error) => {
                 if (error) {
                     return reject('Something went wrong during the config/users.json writeing!')
                 }

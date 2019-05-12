@@ -82,7 +82,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"admin\",\n\t\"password\": \"password\"\n}"
+					"raw": "{\n\t\"name\": \"service\",\n\t\"password\": \"password\"\n}"
 				},
 				"url": {
 					"raw": "{{url}}/service/login",
@@ -192,6 +192,79 @@
 					"path": [
 						"users",
 						"2ddab647-35b7-41bf-bd18-c9e488e4e6f5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Start session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/service/start",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"service",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stop session",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/service/83f7ec12-aaf7-4598-ae06-3a81235b506e",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"service",
+						"83f7ec12-aaf7-4598-ae06-3a81235b506e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Roblockly",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"program\": \"progi\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/service/83f7ec12-aaf7-4598-ae06-3a81235b506e",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"service",
+						"83f7ec12-aaf7-4598-ae06-3a81235b506e"
 					]
 				}
 			},
