@@ -4,6 +4,7 @@ const uuid  = require('uuid/v4')
 const Docker = require('dockerode')
 const Pool = require('./pool')
 const config = require('./config')
+const net = require('net');
 const sessions = new Map();
 const urPool = new Pool(config.pools.UR.start, config.pools.UR.limit)
 const rosPool = new Pool(config.pools.ROS.start, config.pools.ROS.limit)
@@ -19,6 +20,8 @@ class Session {
         this.sid = uuid()
         this.urPort = urPool.get()
         this.rosPort = rosPool.get()
+        this.ip = config.dockerHosts[0].ip  // valamilyen stratégiával lehetne szétosztani a terhelést több gép között
+        
     }
 
     /**
@@ -64,7 +67,14 @@ class Session {
      */
     async sendToCapsule(program) {
         return new Promise((resolve, reject) => {
-            // this.urPort -ra elküldeni a programot
+            try {
+                const client = net.Socket()
+                client.connect(this.urPool, this.ip)
+                client.write(program)
+                client.end()
+            } catch (e) {
+                console.log(e)
+            }
             resolve()
         })
     }

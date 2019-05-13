@@ -33,6 +33,7 @@ class Config {
         this.dockerHosts = [
             {
                 host: 'http://192.168.1.141',
+                ip: '192.168.1.141',
                 port: 2375
             }
         ]
