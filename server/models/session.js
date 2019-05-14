@@ -5,6 +5,8 @@ const Docker = require('dockerode')
 const Pool = require('./pool')
 const config = require('./config')
 const net = require('net');
+const Proxy = require('./proxy')
+
 const sessions = new Map();
 const urPool = new Pool(config.pools.UR.start, config.pools.UR.limit)
 const rosPool = new Pool(config.pools.ROS.start, config.pools.ROS.limit)
@@ -21,7 +23,7 @@ class Session {
         this.urPort = urPool.get()
         this.rosPort = rosPool.get()
         this.ip = config.dockerHosts[0].ip  // valamilyen stratégiával lehetne szétosztani a terhelést több gép között
-        
+        this.proxy = new Proxy(this.rosPort, this.ip, this.rosPort)
     }
 
     /**
@@ -91,6 +93,7 @@ class Session {
             }
             urPool.drop(session.urPort)
             rosPool.drop(session.rosPort)
+            session.proxy.stop()
             sessions.delete(sid)
             // konténer elengedése
             const container = docker.getContainer(sid);
