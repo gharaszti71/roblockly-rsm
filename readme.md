@@ -148,6 +148,7 @@ POST | /service/sid | Roblockly program küldése (sid session-nek) | OK - 200, 
 HTTP verb | URI | Funkció | HTTP response code
 ----------|-----|---------|-------------------
 DELETE | /service/sid | Session (sid-el azonosított) lezárása | OK - 200, Hiba - 400 és error
+
 Ez a lezárási mód az úgynevezett *graceful* lezárás. Ilyenkor - és a session indítánál leírtak esetében is - lezáródik a ROS proxy, valamint törlődik a Docker container.
 
 [MarkDown doksi](https://guides.github.com/features/mastering-markdown/)
