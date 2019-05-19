@@ -1,21 +1,30 @@
 'use strict';
 
-var net = require('net')
+const net = require('net')
+const EventEmitter = require('events')
 
-class Proxy {
+class Proxy extends EventEmitter {
 
     constructor(proxyPort, targetIP, targetPort) {
+        super()
         
         this.proxyPort = proxyPort
         this.targetIP = targetIP
         this.targetPort = targetPort
 
         this.proxy = net.createServer(socket => {
+            this.emit('connect')
+
             const client = net.connect(targetPort, targetIP)
-            socket.pipe(client).pipe(socket);
+            socket.pipe(client).pipe(socket)
 
             socket.on('close', had_error => {
                 client.destroy()
+                this.emit('close', had_error)
+            })
+
+            socket.on('error', (err) => {
+                console.log('Proxy: Socket closed non-gracefully!');
             })
         })
         this.proxy.listen(proxyPort)

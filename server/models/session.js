@@ -24,6 +24,13 @@ class Session {
         this.rosPort = rosPool.get()
         this.ip = config.dockerHosts[0].ip  // valamilyen stratégiával lehetne szétosztani a terhelést több gép között
         this.proxy = new Proxy(this.rosPort, this.ip, this.rosPort)
+        this.proxy.on('close', () => {
+            Session.delete(this.sid)
+            console.log('ROS client closed connection, session destroyed!');
+        })
+        this.proxy.on('connect', () => {
+            console.log('New ROS client connected')
+        })
     }
 
     /**
@@ -95,7 +102,6 @@ class Session {
             rosPool.drop(session.rosPort)
             session.proxy.stop()
             sessions.delete(sid)
-            // konténer elengedése
             const container = docker.getContainer(sid);
             if (container) {
                 container.stop().then(o => o.remove());
