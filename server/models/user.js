@@ -51,6 +51,7 @@ class User {
                 if (err) {
                     users = []
                     await User.add('admin',UserType.Admin, 'password')
+                    await User.add('service',UserType.Service, 'password')
                     return resolve()
                 }
                 users = JSON.parse(data.toString())
