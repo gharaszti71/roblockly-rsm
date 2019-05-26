@@ -46,6 +46,7 @@ class Session {
             docker.run(config.imageName, [], process.stdout, {
                 "name": session.sid,
                 "HostConfig": {
+                    "NetworkMode":config.network,
                     "PortBindings": {
                         "30002/tcp": [{"HostPort": session.urPort.toString()}],
                         "9090/tcp": [{"HostPort": session.rosPort.toString()}]

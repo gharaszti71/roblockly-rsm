@@ -37,6 +37,7 @@ class Config {
                 port: 2375
             }
         ]
+        this.network = "RoblocklyNet"
         this.pools = {
             UR: {
                 start: 40000,

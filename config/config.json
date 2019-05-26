@@ -1,11 +1,12 @@
 {
     "dockerHosts": [
         {
-            "host": "http://192.168.1.141",
-            "ip": "192.168.1.141",
+            "host": "http://192.168.1.243",
+            "ip": "192.168.1.243",
             "port": 2375
         }
     ],
+    "network":"RoblocklyNet",
     "pools": {
         "UR": {
             "start": 40000,
