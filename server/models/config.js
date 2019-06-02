@@ -12,14 +12,19 @@ class Config {
         } catch (e) {
             this.createNew()
         }
-        console.log('Config loaded', new Date().toTimeString());
     }
 
+    /**
+     * Konfiguráció betöltése
+     */
     load() {
         const configBuff = fs.readFileSync(configFilePath)
         Object.assign(this, JSON.parse(configBuff))
     }
 
+    /**
+     * Konfiguráció elmentése
+     */
     save() {
         const config = JSON.stringify(this)
         try {
@@ -29,6 +34,9 @@ class Config {
         }
     }
 
+    /**
+     * Új konfiguráció készítése
+     */
     createNew() {
         this.dockerHosts = [
             {
@@ -37,7 +45,7 @@ class Config {
                 port: 2375
             }
         ]
-        this.network = "RoblocklyNet"
+        this.network = 'RoblocklyNet'
         this.pools = {
             UR: {
                 start: 40000,

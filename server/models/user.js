@@ -88,6 +88,7 @@ class User {
         const user = new User(name, type, password)
         users.push(user)
         await User.save()
+        return user.id
     }
 
     /**
@@ -108,23 +109,27 @@ class User {
      */
     static async modify(user) {
         return new Promise((resolve, reject) => {
-            const userToModify = users.find(u => u.id === user.id)
-            if (!userToModify) {
+            const found = users.find(u => u.id === user.id)
+            if (!found) {
                 return reject('user does not exist')
             }
+
+            const userToModify = Object.assign({}, found)
             userToModify.name = user.name
-            if (user.type !== UserType.Admin && user.type !== UserType.Service) {
-                throw new Error('Invalid user type!')
+            if (user.type && (user.type == UserType.Admin || user.type == UserType.Service)) {
+                userToModify.type = user.type
             }
-            userToModify.type = user.type
-            if (userToModify.password !== user.password) {
-                userToModify.password = bcrypt.hashashSynch(password, 12)
+            if (user.password) {
+                userToModify.password = bcrypt.hashashSynch(user.password, 12)
             }
+
             users.forEach((u, i) => {
                 if (u.id === userToModify.id) {
                     users[i] = userToModify
                 }
             })
+
+            User.save()
             resolve(userToModify)
         })
     }
@@ -146,7 +151,7 @@ class User {
      */
     static async getAll() {
         return new Promise((resolve, reject) => {
-            const cloneUsers = [...users]
+            const cloneUsers = Array.from(users)
             cloneUsers.forEach(u => {
                 delete u.password
             })
@@ -156,8 +161,6 @@ class User {
 }
 
 // Load users from disc
-User.load().then(() => {
-    console.log('Users loaded at', new Date().toTimeString())
-})
+User.load()
 
 module.exports = User
