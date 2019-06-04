@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const UserType = require('./userType')
 const usersFilePath = path.join(__dirname, './../../config/users.json')
+const allowedUpdates = ['name', 'type', 'password']
 let users = []
 
 class User {
@@ -105,40 +106,34 @@ class User {
 
     /**
      * Felhasználó módosítása
+     * @param {uuid} id Felhasználó azonosítója
      * @param {User} user Felhasználó módosult adatai
      */
-    static async modify(user) {
-        return new Promise((resolve, reject) => {
-            const found = users.find(u => u.id === user.id)
-            if (!found) {
-                return reject('user does not exist')
+    static async modify(id, user) {
+        const found = users.find(u => u.id === id)
+        if (!found) {
+            throw Error('user does not exist')
+        }
+        const updates = Object.keys(user)
+        if (!updates.every((update) => allowedUpdates.includes(update))) {
+            throw Error('Not allowed updates')
+        }
+        updates.forEach(async u => {
+            if (u === 'password') {
+                found[u] = await bcrypt.hash(user[u], 12)
+            } else {
+                found[u] = user[u]
             }
-
-            const userToModify = Object.assign({}, found)
-            userToModify.name = user.name
-            if (user.type && (user.type == UserType.Admin || user.type == UserType.Service)) {
-                userToModify.type = user.type
-            }
-            if (user.password) {
-                userToModify.password = bcrypt.hashashSynch(user.password, 12)
-            }
-
-            users.forEach((u, i) => {
-                if (u.id === userToModify.id) {
-                    users[i] = userToModify
-                }
-            })
-
-            User.save()
-            resolve(userToModify)
         })
+        await User.save()
+        return found
     }
 
     /**
      * Betölti a felhasználót az id alapján
      * @param {uuid} id Felhasználói egyedi azonosító
      */
-    static async get(id) {
+    static getSync(id) {
         const user = users.find(u => u.id === id)
         if (!user) {
             throw new Error('User not found!')
@@ -151,9 +146,12 @@ class User {
      */
     static async getAll() {
         return new Promise((resolve, reject) => {
-            const cloneUsers = Array.from(users)
-            cloneUsers.forEach(u => {
-                delete u.password
+            const cloneUsers = []
+            users.forEach(u => {
+                const nu = new User(u.name, u.type, u.password)
+                nu.id = u.id
+                delete nu.password
+                cloneUsers.push(nu)
             })
             resolve(cloneUsers)
         })

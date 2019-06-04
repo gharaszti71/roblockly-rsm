@@ -34,8 +34,7 @@ test('User.get tesztelése', async () => {
     const users = await User.getAll()
     expect(users).toBeInstanceOf(Array)
     expect(users.length).toBeGreaterThanOrEqual(1)
-
-    const user = await User.get(users[0].id)
+    const user = User.getSync(users[0].id)
     expect(user.name).toBe('admin')
 })
 
@@ -45,8 +44,9 @@ test('User.add tesztelése', async () => {
     }
     await User.load()
     const id = await User.add('test1',UserType.Admin, 'password')
-    const user = await User.get(id)
+    const user = User.getSync(id)
     expect(user.name).toBe('test1')
+    await User.remove(id)
 })
 
 test('User.remove tesztelése', async () => {
@@ -60,10 +60,9 @@ test('User.remove tesztelése', async () => {
     expect(users.some(o => o.id === id)).toBe(false)
 })
 
-// test('User.modify tesztelése', async () => {
-//     const id = await User.add('test1',UserType.Admin, 'password')
-//     const user = await User.get(id)
-//     expect(user.name).toBe('test1')
-//     const modified = await User.modify({id: id,name: 'Test2'})
-//     expect(modified.name).toBe('Test2')
-// })
+test('User.modify tesztelése', async () => {
+    const id = await User.add('test1',UserType.Admin, 'password')
+    const modified = await User.modify(id, {name: 'Test2'})
+    expect(modified.name).toBe('Test2')
+    await User.remove(id)
+})

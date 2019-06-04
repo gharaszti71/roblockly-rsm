@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "env-cmd -f ./config/dev.env --use-shell \"nodemon --inspect server/index.js -e js\"",
-    "test": "env-cmd -f ./config/test.env --use-shell \"jest --watch --runInBand\""
+    "test": "env-cmd -f ./config/test.env --use-shell \"node --inspect node_modules/.bin/jest --watch --runInBand\""
   },
   "jest": {
     "testRegex": ".*test\\.js$",
