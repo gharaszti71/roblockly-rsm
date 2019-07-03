@@ -7,7 +7,7 @@ const auth = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ','')
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        const user = await User.get(decoded.id)
+        const user = await User.getSync(decoded.id)
 
         if (!user) {
             throw new Error()

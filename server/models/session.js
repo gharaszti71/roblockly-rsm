@@ -28,6 +28,7 @@ class Session {
             Session.delete(this.sid)
             console.log('ROS client closed connection, session destroyed!');
         })
+
         this.proxy.on('connect', () => {
             console.log('New ROS client connected')
         })
