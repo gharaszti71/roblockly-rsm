@@ -12,10 +12,14 @@ const auth = async (req, res, next) => {
         if (!user) {
             throw new Error()
         }
+        
         req.user = user
+        process.logger.debug('user authorized to auth middleware', {user: user})
+
         next()
     } catch (e) {
-        res.status(401).send({ error: 'Please authenticate.' })
+        process.logger.error('Please authenticate!', {error: e.toString()})
+        res.status(401).send({ error: 'Please authenticate!' })
     }
 }
 

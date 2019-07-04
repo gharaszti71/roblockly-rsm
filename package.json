@@ -11,8 +11,12 @@
   "jest": {
     "testRegex": ".*test\\.js$",
     "testEnvironment": "node",
-    "coveragePathIgnorePatterns":["/node_modules/"],
-    "watchPathIgnorePatterns":["/config/"]
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "watchPathIgnorePatterns": [
+      "/config/"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -22,7 +26,9 @@
     "dockerode": "^2.5.8",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.9.0"
   },
   "devDependencies": {
     "env-cmd": "^9.0.0",
