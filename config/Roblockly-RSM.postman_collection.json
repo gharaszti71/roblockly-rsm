@@ -147,6 +147,28 @@
 			"response": []
 		},
 		{
+			"name": "Read Containers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/service/containers",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"service",
+						"containers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Modify User",
 			"request": {
 				"method": "PATCH",
@@ -199,6 +221,20 @@
 		},
 		{
 			"name": "Start session",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8a10439d-3cfe-42e6-9028-d96353d6abe4",
+						"exec": [
+							"if (pm.response.code == 200) {",
+							"    pm.environment.set('sid', pm.response.json().sid)",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -229,13 +265,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{url}}/service/83f7ec12-aaf7-4598-ae06-3a81235b506e",
+					"raw": "{{url}}/service/{{sid}}",
 					"host": [
 						"{{url}}"
 					],
 					"path": [
 						"service",
-						"83f7ec12-aaf7-4598-ae06-3a81235b506e"
+						"{{sid}}"
 					]
 				}
 			},
