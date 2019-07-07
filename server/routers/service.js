@@ -70,4 +70,18 @@ router.delete('/service/:sid', auth, async (req, res) => {
     }
 })
 
+/**
+ * Futó konténerek listázása
+ */
+router.get('/service/containers', auth, async (req, res) => {
+    try {
+        const containers = await Session.list()
+        res.send(containers)
+        process.logger.debug('GET /service/containers success', { containers: containers.length })
+    } catch (e) {
+        res.status(400).send(e)
+        process.logger.error('GET /service/containers failed: ', e)
+    }
+})
+
 module.exports = router

@@ -40,23 +40,22 @@ class Session {
      * @returns {Session} session objektum
      */
     static async create(userId) {
-        return new Promise((resolve, reject) => {
-            const session = new Session(userId)
-            sessions.set(session.sid, session)
-    
-            docker.run(config.imageName, [], process.stdout, {
-                "name": session.sid,
-                "HostConfig": {
-                    "NetworkMode":config.network,
-                    "PortBindings": {
-                        "30002/tcp": [{"HostPort": session.urPort.toString()}],
-                        "9090/tcp": [{"HostPort": session.rosPort.toString()}]
-                    }
+        const session = new Session(userId)
+        sessions.set(session.sid, session)
+
+        const container = await docker.createContainer({
+            Image: config.imageName,
+            name: session.sid,
+            HostConfig: {
+                NetworkMode: config.network,
+                PortBindings: {
+                    "30002/tcp": [{"HostPort": session.urPort.toString()}],
+                    "9090/tcp": [{"HostPort": session.rosPort.toString()}]
                 }
-            });
-    
-            resolve(session)
+            }
         })
+        await container.start()
+        return session
     }
 
     /**
@@ -95,20 +94,38 @@ class Session {
      * @param {uuid} sid session azonosító
      */
     static async delete(sid) {
-        return new Promise((resolve, reject) => {
-            const session = sessions.get(sid)
-            if (!session) {
-                return reject('Session does not exist!')
-            }
+        const session = sessions.get(sid)
+        if (session) {
             urPool.drop(session.urPort)
             rosPool.drop(session.rosPort)
             session.proxy.stop()
             sessions.delete(sid)
-            const container = docker.getContainer(sid);
-            if (container) {
-                container.stop().then(o => o.remove());
+        }
+        const container = docker.getContainer(sid);
+        if (container) {
+            //container.stop().then(o => o.remove());
+            await container.remove({force: true})
+        }
+    }
+
+    /**
+     * Listázza a session-öket
+     */
+    static async list() {
+        let op = {
+            all: true,
+            filters: {"ancestor": [config.imageName]}
+        };
+        const containers = await docker.listContainers(op)
+
+        return containers.map(o => {
+            return {
+                id: o.Id,
+                name: o.Names[0].slice(1),
+                state: o.State,
+                status: o.Status,
+                orphan: !sessions.get(o.Names[0].slice(1))
             }
-            resolve()
         })
     }
 }
