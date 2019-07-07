@@ -151,4 +151,21 @@ DELETE | /service/sid | Session (sid-el azonosított) lezárása | OK - 200, Hib
 
 Ez a lezárási mód az úgynevezett *graceful* lezárás. Ilyenkor - és a session indítánál leírtak esetében is - lezáródik a ROS proxy, valamint törlődik a Docker container.
 
+HTTP verb | URI | Funkció | HTTP response code
+----------|-----|---------|-------------------
+GET | /service/containers | Container lista lekérdezése | OK - 200, Hiba - 400 és error
+> Response body
+```json
+[
+    {
+        "id": "ef6c12b635010d14b8fa7641c1a97c3c2f1cfae787d7430638ddfd0f98e38a4a",
+        "name": "bdfb01dd-01db-4a84-8778-f39b234ac45b",
+        "state": "running",
+        "status": "Up 5 seconds",
+        "orphan": false
+    }
+]
+```
+A listaelemek az id-n kívül a session nevét - ami egyben a konténer neve is - tartalmazzák, valamint állapotát és státuszát. Az *orphan* adattag igaz, ha elárvult session-ről van szó, azaz nincs neki megfelelője a session listában.
+
 [MarkDown doksi](https://guides.github.com/features/mastering-markdown/)
