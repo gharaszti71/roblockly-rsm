@@ -57,6 +57,8 @@ class Config {
             }
         }
         this.imageName = 'capsule'
+        this.logLevel = 'debug'
+        this.watchdogSeconds = 5
 
         this.save()
         this.load()

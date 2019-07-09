@@ -1,6 +1,7 @@
 "use strict";
 
-var winston = require('winston')
+const config = require('./models/config')
+const winston = require('winston')
 require('winston-daily-rotate-file')
 
 // Sertup logging
@@ -17,7 +18,7 @@ transport.on('rotate', function(oldFilename, newFilename) {
 })
 
 var logger = winston.createLogger({
-    level: 'debug',
+    level: config.logLevel,
     format: winston.format.json(),
     //defaultMeta: { service: 'rrsm' },
     transports: [

@@ -17,5 +17,7 @@
             "limit": 100
         }
     },
-    "imageName": "capsule"
+    "imageName": "capsule",
+    "logLevel": "debug",
+    "watchdogSeconds": 5
 }
