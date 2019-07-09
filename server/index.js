@@ -11,6 +11,7 @@ app.listen(port, () => {
 
 /**
  * WatchDog indítása. Feliratkozás: process.on('watchdog', () =>{})
+ * ha hosszan fut, akkor setImmediate() -et kell használni a subscriber-ben!
  */
 setInterval(() => {
     process.emit('watchdog')
