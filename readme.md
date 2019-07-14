@@ -55,6 +55,8 @@ POST | /users/login | Bejelentkezés Admin-ként. | OK - 200, Hiba - 400
 }
 ```
 
+---
+
 HTTP verb | URI | Funkció | HTTP response code
 ----------|-----|---------|-------------------
 POST | /users | Felhasználó létrehozása. | OK - 201, Hiba - 400 és error
@@ -86,6 +88,8 @@ GET | /users | Felhasználói lista lekérdezése | OK - 200, Hiba - 400 és err
 ]
 ```
 
+---
+
 HTTP verb | URI | Funkció | HTTP response code
 ----------|-----|---------|-------------------
 DELETE | /users/id | Felhasználó (id-jű) törlése | OK - 200, Hiba - 400 és error
@@ -102,6 +106,8 @@ PATCH | /users/id | Felhasználó (id-jű) módosítása | OK - 200, Hiba - 400 
 	"password":"password"
 }
 ```
+
+---
 
 ### SERVICE szervíz
 
@@ -122,6 +128,8 @@ POST | /service/login | Bejelentkezés Service-ként. | OK - 200, Hiba - 400
 }
 ```
 
+---
+
 HTTP verb | URI | Funkció | HTTP response code
 ----------|-----|---------|-------------------
 POST | /service/start | Új session indítása | OK - 200, Hiba - 400
@@ -135,6 +143,8 @@ POST | /service/start | Új session indítása | OK - 200, Hiba - 400
 ```
 Az új Roblockly session indítása magával hozza, hogy a Docker host-on is létrejön és elindul egy konténer, valamint a fent említett kétféle pool-ból kiosztódik 1-1 egyedi port is, amire a Capsule megfelelő portjai az **RRSM** IP címén rá lesznek mappelve. A két portból számunkra az **rosPort** az érdekes, a virtuális robot ROS kliensét ide kell írányítani. **FIGYELEM**, amint megszűnik a ws kapcsolat, akkor rögtön törlődik is a session, valamint amíg megvan a ws kapcsolat, addig él a session!!! A Roblockly scriptet más úton kell eljuttatni a capsule-nak!
 
+---
+
 HTTP verb | URI | Funkció | HTTP response code
 ----------|-----|---------|-------------------
 POST | /service/sid | Roblockly program küldése (sid session-nek) | OK - 200, Hiba - 400
@@ -145,15 +155,19 @@ POST | /service/sid | Roblockly program küldése (sid session-nek) | OK - 200, 
 }
 ```
 
+---
+
 HTTP verb | URI | Funkció | HTTP response code
 ----------|-----|---------|-------------------
 DELETE | /service/sid | Session (sid-el azonosított) lezárása | OK - 200, Hiba - 400 és error
 
 Ez a lezárási mód az úgynevezett *graceful* lezárás. Ilyenkor - és a session indítánál leírtak esetében is - lezáródik a ROS proxy, valamint törlődik a Docker container.
 
+---
+
 HTTP verb | URI | Funkció | HTTP response code
 ----------|-----|---------|-------------------
-GET | /service/containers | Container lista lekérdezése | OK - 200, Hiba - 400 és error
+GET | /containers | Container lista lekérdezése | OK - 200, Hiba - 400 és error
 > Response body
 ```json
 [
@@ -167,5 +181,28 @@ GET | /service/containers | Container lista lekérdezése | OK - 200, Hiba - 400
 ]
 ```
 A listaelemek az id-n kívül a session nevét - ami egyben a konténer neve is - tartalmazzák, valamint állapotát és státuszát. Az *orphan* adattag igaz, ha elárvult session-ről van szó, azaz nincs neki megfelelője a session listában.
+
+---
+
+HTTP verb | URI | Funkció | HTTP response code
+----------|-----|---------|-------------------
+GET | /service/:sid | session portjainak lekérdezése | OK - 200, Hiba - 400 error - 404 nem található
+> Response body
+```json
+{
+    "sid": "3dbb278c-e1b0-44c0-bad0-55e7c50c4810",
+    "rosPort": 50000,
+    "urPort": 40000
+}
+```
+Visszaadja az adott session hozzárendelt portjait.
+
+---
+
+HTTP verb | URI | Funkció | HTTP response code
+----------|-----|---------|-------------------
+POST | /watchdog/:sid | Wathchdog | OK - 200, Hiba - 400, 404
+
+Időszakosan hívni kell a session-ökből a watchdogot, mert különben egy timeout idő elteltével a rendszer kidobja az adott session-t.
 
 [MarkDown doksi](https://guides.github.com/features/mastering-markdown/)

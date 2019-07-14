@@ -40,6 +40,30 @@ router.post('/service/start', auth, async (req, res) => {
 })
 
 /**
+ * Session adatainak lekérése
+ */
+router.get('/service/:sid', auth, async (req, res) => {
+    try {
+        const sid = req.params.sid
+        const session = await Session.get(sid)
+        if (!session) {
+            process.logger.warn('GET /service/:sid not found', { session_sid: session.sid })
+            res.status(404).send()
+        } else {
+            process.logger.debug('GET /service/:sid success', { session_sid: session.sid, session_rosPort: session.rosPort, session_urPort: session.urPort})
+            res.send({ 
+                sid: session.sid,
+                rosPort: session.rosPort,
+                urPort: session.urPort
+            })
+        }
+    } catch (e) {
+        process.logger.error('GET /service/:sid failed: ', e, {sid: req.params.sid})
+        res.status(400).send(e)
+    }
+})
+
+/**
  * Roblockly program küldése
  */
 router.post('/service/:sid', auth, async (req, res) => {
@@ -73,14 +97,40 @@ router.delete('/service/:sid', auth, async (req, res) => {
 /**
  * Futó konténerek listázása
  */
-router.get('/service/containers', auth, async (req, res) => {
+router.get('/containers', auth, async (req, res) => {
     try {
         const containers = await Session.list()
-        res.send(containers)
-        process.logger.debug('GET /service/containers success', { containers: containers.length })
+        const result = containers.map(o => {
+            return {
+                id: o.Id,
+                name: o.Names[0].slice(1),
+                state: o.State,
+                status: o.Status,
+                orphan: !Session.get(o.Names[0].slice(1))
+            }
+        })
+        res.send(result)
+        process.logger.debug('GET /containers success', { containers: containers.length })
     } catch (e) {
         res.status(400).send(e)
-        process.logger.error('GET /service/containers failed: ', e)
+        process.logger.error('GET /containers failed: ', e)
+    }
+})
+
+router.post('/watchdog/:sid', auth, async (req, res) => {
+    try {
+        const sid = req.params.sid
+        const session = await Session.get(sid)
+        if (!session) {
+            process.logger.warn('POST /watchdog/:sid not found', { session_sid: session.sid })
+            res.status(404).send()
+        } else {
+            process.logger.debug('POST /watchdog/:sid success', { session_sid: session.sid, session_rosPort: session.rosPort, session_urPort: session.urPort})
+            res.send()
+        }
+    } catch (e) {
+        res.status(400).send(e)
+        process.logger.error('POST /watchdog/:sid failed: ', e, {sid: req.params.sid})
     }
 })
 

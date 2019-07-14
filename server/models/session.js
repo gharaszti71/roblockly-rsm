@@ -17,21 +17,37 @@ const docker = new Docker({
 
 class Session {
 
-    constructor(userId) {
+    constructor(userId, sid, urPort, rosPoprt) {
         this.userId = userId
-        this.sid = uuid()
-        this.urPort = urPool.get()
-        this.rosPort = rosPool.get()
-        this.ip = config.dockerHosts[0].ip  // valamilyen stratégiával lehetne szétosztani a terhelést több gép között
+        this.sid = sid || uuid()
+        this.urPort = urPort || urPool.get()
+        this.rosPort = rosPoprt || rosPool.get()
+        this.ip = config.dockerHosts[0].ip
         this.proxy = new Proxy(this.rosPort, this.ip, this.rosPort)
+
         this.proxy.on('close', () => {
             Session.delete(this.sid)
-            console.log('ROS client closed connection, session destroyed!');
+            process.logger.info('Proxy.close => ROS client closed connection, session destroyed!', { sid: this.sid, userId: this.userId });
         })
 
         this.proxy.on('connect', () => {
-            console.log('New ROS client connected')
+            process.logger.info('Proxy.connect => New ROS client connected')
         })
+    }
+
+    /**
+     * Init sessions variable after crash
+     */
+    static async init() {
+        const containers = await this.list()
+        if (containers.length > 0) {
+            containers.forEach(item => {
+                const session = new Session(item.Labels.userId, item.Names[0].slice(1), item.Ports[0].PublicPort, item.Ports[1].PublicPort)
+                sessions.set(session.sid, session)
+                process.logger.debug('Session has benn restored', session)
+            });
+            process.logger.info(`Session.init() => ${sessions.size} session(s) has been restored`)
+        }
     }
 
     /**
@@ -46,6 +62,7 @@ class Session {
         const container = await docker.createContainer({
             Image: config.imageName,
             name: session.sid,
+            Labels: { userId },
             HostConfig: {
                 NetworkMode: config.network,
                 PortBindings: {
@@ -56,6 +73,15 @@ class Session {
         })
         await container.start()
         return session
+    }
+
+    /**
+     * Visszaadja az adott session adatait
+     * @param {uuid} sid Session azonosító
+     */
+    static async get(sid) {
+        const session = sessions.get(sid)
+        return Promise.resolve(session)
     }
 
     /**
@@ -83,7 +109,7 @@ class Session {
                 client.write(program)
                 client.end()
             } catch (e) {
-                console.log(e)
+                process.logger.error('Session.sendToCapsule failed: ', e)
             }
             resolve()
         })
@@ -117,16 +143,7 @@ class Session {
             filters: {"ancestor": [config.imageName]}
         };
         const containers = await docker.listContainers(op)
-
-        return containers.map(o => {
-            return {
-                id: o.Id,
-                name: o.Names[0].slice(1),
-                state: o.State,
-                status: o.Status,
-                orphan: !sessions.get(o.Names[0].slice(1))
-            }
-        })
+        return containers
     }
 }
 

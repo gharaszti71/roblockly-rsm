@@ -24,6 +24,17 @@ class Pool {
         this.inUse.add(port)
         return port
     }
+
+    /**
+     * Már használatban port lefoglalása
+     * @param {Number} port Lefoglalandó port
+     */
+    set(port) {
+        if (port < this.start || port > (this.start + this.length - 1) || this.inUse.has(port)) {
+            throw new Error('nem beállítható port!')
+        }
+        this.inUse.add(port)
+    }
     
     /**
      * Szám visszaadása a poolnak
