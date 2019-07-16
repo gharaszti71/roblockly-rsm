@@ -118,7 +118,7 @@ router.get('/containers', auth, async (req, res) => {
 })
 
 router.post('/watchdog/:sid', auth, async (req, res) => {
-    try {
+    try { 
         const sid = req.params.sid
         const session = await Session.get(sid)
         if (!session) {

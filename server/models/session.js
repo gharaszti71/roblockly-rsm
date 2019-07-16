@@ -27,11 +27,11 @@ class Session {
 
         this.proxy.on('close', () => {
             Session.delete(this.sid)
-            process.logger.info('Proxy.close => ROS client closed connection, session destroyed!', { sid: this.sid, userId: this.userId });
+            process.logger.debug('ROS client closed connection, session destroyed!', { sid: this.sid, userId: this.userId });
         })
 
         this.proxy.on('connect', () => {
-            process.logger.info('Proxy.connect => New ROS client connected')
+            process.logger.debug('New ROS client connected')
         })
     }
 
@@ -39,14 +39,18 @@ class Session {
      * Init sessions variable after crash
      */
     static async init() {
-        const containers = await this.list()
-        if (containers.length > 0) {
-            containers.forEach(item => {
-                const session = new Session(item.Labels.userId, item.Names[0].slice(1), item.Ports[0].PublicPort, item.Ports[1].PublicPort)
-                sessions.set(session.sid, session)
-                process.logger.debug('Session has benn restored', session)
-            });
-            process.logger.info(`Session.init() => ${sessions.size} session(s) has been restored`)
+        try {
+            const containers = await this.list()
+            if (containers.length > 0) {
+                containers.forEach(item => {
+                    const session = new Session(item.Labels.userId, item.Names[0].slice(1), item.Ports[0].PublicPort, item.Ports[1].PublicPort)
+                    sessions.set(session.sid, session)
+                    process.logger.debug('Session has benn restored', session)
+                });
+                process.logger.info(`Session.init() => ${sessions.size} session(s) has been restored`)
+            }
+        } catch (e) {
+            process.logger.error('Session.init failed: ', e)
         }
     }
 
