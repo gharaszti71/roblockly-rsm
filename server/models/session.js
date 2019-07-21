@@ -26,8 +26,8 @@ class Session {
         this.proxy = new Proxy(this.rosPort, this.ip, this.rosPort)
 
         this.proxy.on('close', () => {
-            Session.delete(this.sid)
-            process.logger.debug('ROS client closed connection, session destroyed!', { sid: this.sid, userId: this.userId });
+            //Session.delete(this.sid)
+            //process.logger.debug('ROS client closed connection, session destroyed!', { sid: this.sid, userId: this.userId });
         })
 
         this.proxy.on('connect', () => {
