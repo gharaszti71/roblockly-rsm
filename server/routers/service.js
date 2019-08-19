@@ -126,6 +126,7 @@ router.post('/watchdog/:sid', auth, async (req, res) => {
             res.status(404).send()
         } else {
             process.logger.debug('POST /watchdog/:sid success', { session_sid: session.sid, session_rosPort: session.rosPort, session_urPort: session.urPort})
+            session.watchdog()
             res.send()
         }
     } catch (e) {

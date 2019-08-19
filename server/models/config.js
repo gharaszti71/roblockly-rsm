@@ -59,6 +59,7 @@ class Config {
         this.imageName = 'capsule'
         this.logLevel = 'debug'
         this.watchdogSeconds = 5
+        this.maxInactivitySeconds = 120
 
         this.save()
         this.load()

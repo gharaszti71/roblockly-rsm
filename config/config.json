@@ -19,5 +19,6 @@
     },
     "imageName": "capsule",
     "logLevel": "debug",
-    "watchdogSeconds": 5
+    "watchdogSeconds": 5,
+    "maxInactivitySeconds": 120
 }

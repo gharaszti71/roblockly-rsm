@@ -18,6 +18,7 @@ const docker = new Docker({
 class Session {
 
     constructor(userId, sid, urPort, rosPoprt) {
+        this.lastAccessed = new Date();
         this.userId = userId
         this.sid = sid || uuid()
         this.urPort = urPort || urPool.get()
@@ -149,6 +150,38 @@ class Session {
         const containers = await docker.listContainers(op)
         return containers
     }
+
+    /**
+     * Frissíti a watchdogot az adott session-re
+     */
+    watchdog() {
+        this.lastAccessed = new Date()
+    }
 }
+
+/**
+ * Watchdog ciklikus process watchdogSeconds időközönként
+ * Ha egy session maxInactivitySeconds óta inaktív, akkor törlődik
+ * /külön figyelni kell, hogy a setInterval-ban nem lehet lekezeletlen kivétel!/
+ */
+setInterval(() => {
+    docker.ping()
+        .then(_ => {
+            const current = new Date()
+            sessions.forEach(async session => {
+                if (current - session.lastAccessed > config.maxInactivitySeconds * 1000) {
+                    try {
+                        await Session.delete(session.sid)
+                        process.logger.info('session deleted:', session.sid)
+                    } catch (e) {
+                        process.logger.error('session delete failed:', session.sid, e)
+                    }
+                }
+            })
+        })
+        .catch(e => {
+            process.logger.error('docker ping failed: ', e)
+        })
+}, config.watchdogSeconds * 1000)
 
 module.exports = Session
