@@ -29,7 +29,10 @@ A konfigurációs fájlra egy minta:
             "limit": 100
         }
     },
-    "imageName": "capsule"
+    "imageName": "capsule",
+    "logLevel": "debug",
+    "watchdogSeconds": 5,
+    "maxInactivitySeconds": 120
 }
 ```
 A **dockerHosts** paraméterben található a távolról is elérhetővé tett docker szolgáltatás, akár több is felsorolva /jelenleg a rendszer csak az elsőt használja/. A **host** paraméterben található az elérés URL-je a megfelelő protokollal megjelölve, az **ip** paraméterben található a docker host IP címe, amire majd a proxy a port forwardingot fogja létrehozni, míg a **port** paraméterben találhaó a távoli menedzsemnt portja a dockernek.

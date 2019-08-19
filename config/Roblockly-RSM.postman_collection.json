@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "433fe1f5-d1d1-4059-b3a8-b3fa5e4b4bb5",
+		"_postman_id": "d28e094c-3cba-4185-a035-a8f1bf84f9c2",
 		"name": "Roblockly-RSM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -224,10 +224,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{url}}/users",
 					"host": [
@@ -245,10 +241,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{url}}/containers",
 					"host": [
@@ -266,10 +258,6 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "{{url}}/service/{{sid}}",
 					"host": [
