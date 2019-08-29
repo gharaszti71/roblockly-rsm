@@ -43,16 +43,16 @@ html {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 1.6rem;
   text-align: center;
   color: #2c3e50;
 }
 
 #app {
+  font-size: 1.6rem;
   display: grid;
   grid-gap: 1rem;
   height: 100vh;
   row-gap: 0.5rem;
-  grid-template-rows: 2rem auto minmax(20rem, 1fr) 2rem;
+  grid-template-rows: 4rem auto minmax(20rem, 1fr) 3rem;
 }
 </style>

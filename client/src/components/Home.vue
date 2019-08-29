@@ -12,8 +12,7 @@ export default {
 
 <style>
 .home {
-  background-color: deeppink;
   grid-row: 3 / 4;
-  height: calc(100vh - 7rem);
+  height: calc(100vh - 11rem);
 }
 </style>

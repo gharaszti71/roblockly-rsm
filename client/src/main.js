@@ -6,6 +6,7 @@ import api from './util/service'
 import Home from './components/Home.vue'
 import LoginForm from './components/login.vue'
 import HelloWorld from './components/HelloWorld'
+import Users from './components/Users.vue'
 
 // axios felkonfigurálása
 // Ha már  be vagyunk jelentkezve, akkor a token-t mellékelni kell a header-ben!
@@ -27,7 +28,9 @@ Vue.use(VueRouter)
 const routes = [
   { name: 'home', path: '/', component: Home },
   { name: 'login', path: '/login', component: LoginForm },
-  { name: 'hello', path: '/helloworld', component: HelloWorld }
+  { name: 'hello', path: '/helloworld', component: HelloWorld },
+  { name: 'useradmin', path: '/useradmin', component: Users },
+  { name: 'sessionadmin', path: '/sessionadmin', component: Home },
 ]
 
 const router = new VueRouter({routes})

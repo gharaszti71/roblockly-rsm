@@ -1,6 +1,6 @@
 <template>
 <header>
-    <h1>Header</h1>
+    <h1>Roblockly Resource Scale Manager (RRSM)</h1>
 </header>
 </template>
 
@@ -14,6 +14,5 @@ export default {
 header {
     background-color:#ffffff;
     grid-row: 1 / 2;
-    height: 2rem;
 }
 </style>

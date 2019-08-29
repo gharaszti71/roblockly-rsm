@@ -1,8 +1,9 @@
 <template>
 <nav>
     <ul>
-        <li><a href="#">Users</a></li>
-        <li><a href="#">Sessions</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/useradmin">Users</a></li>
+        <li><a href="/sessionadmin">Sessions</a></li>
         <li><a href="#" @click="logout">Logout</a></li>
     </ul>
 </nav>
@@ -24,8 +25,8 @@ export default {
 
 <style>
 nav {
-    background-color: orangered;
-    height: minmax(auto, 2rem);
+    background-color: #eeee;
+    height: minmax(auto, 3rem);
     grid-row: 2 / 3;
 }
 
@@ -34,7 +35,7 @@ ul {
 }
 
 ul li {
-  font-size: 1rem;
+  font-size: 2rem;
   list-style: none; 
   float: left; 
   display:block; 

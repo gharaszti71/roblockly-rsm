@@ -1,12 +1,11 @@
 <template>
  <div class="login">
-   <form class="login" @submit.prevent="login">
+   <form class="loginForm" @submit.prevent="login">
      <h1>Sign in</h1>
      <label>User name</label>
      <input required v-model="username" type="text" placeholder="Username"/>
      <label>Password</label>
      <input required v-model="password" type="password" placeholder="Password"/>
-     <hr/>
      <button type="submit">Login</button>
    </form>
  </div>
@@ -31,6 +30,21 @@ export default {
 
 <style>
 .login {
-  margin-top: 2rem;
+  height: calc(100vh - 30rem);
+  padding-top: 5rem;
+}
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginForm > * {
+  margin-bottom: 1rem;
+}
+
+h1 {
+  padding-bottom: 5rem;
 }
 </style>

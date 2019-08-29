@@ -16,11 +16,10 @@ export default {
 footer {
     background-color:#101d2c;
     grid-row: 4 / 5;
-    height: 2rem;
 }
 
 .copyright {
-    font-size: 0.6rem;
+    font-size: 1.6rem;
     color: #aaa;
     margin-top: 0.5rem;
     margin-right: auto;
