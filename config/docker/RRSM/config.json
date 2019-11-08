@@ -1,0 +1,24 @@
+{
+    "dockerHosts": [
+        {
+            "host": "http://172.26.3.142",
+            "ip": "172.26.3.142",
+            "port": 2375
+        }
+    ],
+    "network":"RoblocklyNet",
+    "pools": {
+        "UR": {
+            "start": 40000,
+            "limit": 100
+        },
+        "ROS": {
+            "start": 50000,
+            "limit": 100
+        }
+    },
+    "imageName": "capsule",
+    "logLevel": "debug",
+    "watchdogSeconds": 5,
+    "maxInactivitySeconds": 120
+}

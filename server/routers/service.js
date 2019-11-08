@@ -56,6 +56,8 @@ router.get('/service/:sid', auth, async (req, res) => {
                 rosPort: session.rosPort,
                 urPort: session.urPort
             })
+            //TODO: inspect container under sid with builtin functionality
+            //TODO: healthcheck
         }
     } catch (e) {
         process.logger.error('GET /service/:sid failed: ', e, {sid: req.params.sid})
