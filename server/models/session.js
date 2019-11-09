@@ -76,87 +76,95 @@ class Session {
                 }
             }
         })
-        await container.start()
-        return session
-    }
+    await container.start()
+    return session
+  }
 
-    /**
-     * Visszaadja az adott session adatait
-     * @param {uuid} sid Session azonosító
-     */
-    static async get(sid) {
-        const session = sessions.get(sid)
-        return Promise.resolve(session)
-    }
+  /**
+   * Visszaadja az adott session adatait
+   * @param {uuid} sid Session azonosító
+   */
+  static async get(sid) {
+    const session = sessions.get(sid)
+    return Promise.resolve(session)
+  }
 
-    /**
-     * Program küldése a session kapszulájának
-     * @param {uuid} sid Session azonosító
-     * @param {String} program Program kódja
-     */
-    static async sendProgram(sid, program) {
-        const session = sessions.get(sid)
-        if (!session) {
-            throw new Error('Session does not exist!')
-        }
-        await session.sendToCapsule(program)
+  /**
+   * Program küldése a session kapszulájának
+   * @param {uuid} sid Session azonosító
+   * @param {String} program Program kódja
+   */
+  static async sendProgram(sid, program) {
+    const session = sessions.get(sid)
+    if (!session) {
+      throw new Error('Session does not exist!')
     }
+    await session.sendToCapsule(program)
+  }
 
-    /**
-     * Roblockly program küldése a kapszulának
-     * @param {String} program A kapszulának szánt Roblockly program
-     */
-    async sendToCapsule(program) {
-        return new Promise((resolve, reject) => {
-            try {
-                const client = net.Socket()
-                client.connect(this.urPool, this.ip)
-                client.write(program)
-                client.end()
-            } catch (e) {
-                process.logger.error('Session.sendToCapsule failed: ', e)
-            }
-            resolve()
-        })
+  /**
+   * Roblockly program küldése a kapszulának
+   * @param {String} program A kapszulának szánt Roblockly program
+   */
+  async sendToCapsule(program) {
+    return new Promise((resolve, reject) => {
+      try {
+        const client = net.Socket()
+        client.connect(this.urPool, this.ip)
+        client.write(program)
+        client.end()
+      } catch (e) {
+        process.logger.error('Session.sendToCapsule failed: ', e)
+      }
+      resolve()
+    })
+  }
+
+  /**
+   * Törli a session-t
+   * @param {uuid} sid session azonosító
+   */
+  static async delete(sid) {
+    const session = sessions.get(sid)
+    if (session) {
+      urPool.drop(session.urPort)
+      rosPool.drop(session.rosPort)
+      session.proxy.stop()
+      sessions.delete(sid)
     }
-
-    /**
-     * Törli a session-t
-     * @param {uuid} sid session azonosító
-     */
-    static async delete(sid) {
-        const session = sessions.get(sid)
-        if (session) {
-            urPool.drop(session.urPort)
-            rosPool.drop(session.rosPort)
-            session.proxy.stop()
-            sessions.delete(sid)
-        }
-        const container = docker.getContainer(sid);
+    const container = docker.getContainer(sid);
         if (container) {
             //container.stop().then(o => o.remove());
             await container.remove({force: true})
         }
-    }
+  }
 
-    /**
-     * Listázza a session-öket
-     */
-    static async list() {
-        let op = {
-            all: true,
-            filters: {"ancestor": [config.imageName]}
-        };
-        const containers = await docker.listContainers(op)
-        return containers
-    }
+  /**
+   * Listázza a session-öket
+   */
+  static async list() {
+    let op = {
+      all: true,
+      filters: {"ancestor": [config.imageName]}
+    };
+    const containers = await docker.listContainers(op)
+    return containers
+  }
 
-    /**
-     * Frissíti a watchdogot az adott session-re
-     */
-    watchdog() {
-        this.lastAccessed = new Date()
-    }
+  static async getHealthStatus(sid) {
+    const containers = await this.list()
+
+    const actualContainer = containers.find(container => container.Names[0].slice(1) === sid)
+
+    return actualContainer.State.Health.Status
+  }
+
+  /**
+   * Frissíti a watchdogot az adott session-re
+   */
+  watchdog() {
+    this.lastAccessed = new Date()
+  }
 }
 
 /**
@@ -165,23 +173,23 @@ class Session {
  * /külön figyelni kell, hogy a setInterval-ban nem lehet lekezeletlen kivétel!/
  */
 setInterval(() => {
-    docker.ping()
-        .then(_ => {
-            const current = new Date()
-            sessions.forEach(async session => {
-                if (current - session.lastAccessed > config.maxInactivitySeconds * 1000) {
-                    try {
-                        await Session.delete(session.sid)
-                        process.logger.info('session deleted:', session.sid)
-                    } catch (e) {
-                        process.logger.error('session delete failed:', session.sid, e)
-                    }
-                }
-            })
-        })
-        .catch(e => {
-            process.logger.error('docker ping failed: ', e)
-        })
+  docker.ping()
+    .then(_ => {
+      const current = new Date()
+      sessions.forEach(async session => {
+        if (current - session.lastAccessed > config.maxInactivitySeconds * 1000) {
+          try {
+            await Session.delete(session.sid)
+            process.logger.info('session deleted:', session.sid)
+          } catch (e) {
+            process.logger.error('session delete failed:', session.sid, e)
+          }
+        }
+      })
+    })
+    .catch(e => {
+      process.logger.error('docker ping failed: ', e)
+    })
 }, config.watchdogSeconds * 1000)
 
 module.exports = Session
