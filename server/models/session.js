@@ -151,12 +151,12 @@ class Session {
     return containers
   }
 
-  static async getHealthStatus(sid) {
+  static async getStatus(sid) {
     const containers = await this.list()
 
     const actualContainer = containers.find(container => container.Names[0].slice(1) === sid)
 
-    return actualContainer.State.Health.Status
+    return actualContainer.Status
   }
 
   /**

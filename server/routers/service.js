@@ -52,12 +52,12 @@ router.get('/service/:sid', auth, async (req, res) => {
         } else {
             process.logger.debug('GET /service/:sid success', { session_sid: session.sid, session_rosPort: session.rosPort, session_urPort: session.urPort})
             
-      Session.getHealthStatus(session.sid).then(healthStatus => {
+      Session.getStatus(session.sid).then(status => {
         res.send({
           sid: session.sid,
           rosPort: session.rosPort,
           urPort: session.urPort,
-          healthStatus
+          status
         })
       })
     }
