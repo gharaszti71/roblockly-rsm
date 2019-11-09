@@ -41,6 +41,7 @@ router.post('/service/start', auth, async (req, res) => {
 
 /**
  * Session adatainak lekérése
+ * statusból a felhasználó kiparseolhatja, hogy healthy vagy unhealthy az adott docker instance
  */
 router.get('/service/:sid', auth, async (req, res) => {
     try {
