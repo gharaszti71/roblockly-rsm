@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/index.js",
+    "start": "env-cmd -f ./config/dev.env \"node server/index.js\"",
     "dev": "env-cmd -f ./config/dev.env --use-shell \"nodemon --inspect server/index.js -e js\"",
     "test": "env-cmd -f ./config/test.env --use-shell \"node --inspect node_modules/.bin/jest --watch --runInBand\""
   },
@@ -34,6 +34,7 @@
     "env-cmd": "^9.0.0",
     "jest": "^24.8.0",
     "nodemon": "^1.19.0",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "typescript": "^3.5.3"
   }
 }
