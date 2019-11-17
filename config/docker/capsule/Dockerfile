@@ -66,6 +66,10 @@ RUN /bin/bash -c '. /opt/ros/kinetic/setup.bash; cd /root/catkin_ws; catkin_make
 
 # Supervisord telepítése és futtatása
 WORKDIR /root
+
+COPY healthcheck.js .
+HEALTHCHECK --interval=5s --timeout=30s --start-period=1s --retries=5 CMD [ "node","healthcheck.js" ]
+
 COPY supervisord.conf /root
 ENTRYPOINT ["/usr/bin/supervisord","-c","/root/supervisord.conf"]
 
