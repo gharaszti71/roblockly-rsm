@@ -68,6 +68,8 @@ RUN /bin/bash -c '. /opt/ros/kinetic/setup.bash; cd /root/catkin_ws; catkin_make
 WORKDIR /root
 
 COPY healthcheck.js .
+COPY package.json .
+RUN npm install
 HEALTHCHECK --interval=5s --timeout=30s --start-period=1s --retries=5 CMD [ "node","healthcheck.js" ]
 
 COPY supervisord.conf /root
