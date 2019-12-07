@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "env-cmd -f ./config/dev.env \"node server/index.js\"",
+    "start": "node server/index.js",
     "dev": "env-cmd -f ./config/dev.env --use-shell \"nodemon --inspect server/index.js -e js\"",
     "test": "env-cmd -f ./config/test.env --use-shell \"node --inspect node_modules/.bin/jest --watch --runInBand\""
   },
