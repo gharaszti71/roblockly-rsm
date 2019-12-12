@@ -155,8 +155,9 @@ class Session {
     const containers = await this.list()
 
     const actualContainer = containers.find(container => container.Names[0].slice(1) === sid)
+    const containerInfo = await docker.getContainer(actualContainer.Id).inspect()
 
-    return actualContainer.Status
+    return containerInfo.State.Health.Status
   }
 
   /**

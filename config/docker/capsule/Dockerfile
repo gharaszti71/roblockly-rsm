@@ -20,15 +20,15 @@ RUN	/bin/bash -c "./install.sh"
 RUN echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list && \
 	apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116 && \
 	apt-get update && \
-	apt-get -y install ros-kinetic-ros-base && \
+	apt-get -y install ros-kinetic-ros-base --allow-unauthenticated && \
 	rosdep init && \
 	rosdep update && \
 	echo "source /opt/ros/kinetic/setup.bash" >> /root/.bashrc && \
 	/bin/bash -c "source /root/.bashrc" && \
-	apt-get -y install python-rosinstall python-rosinstall-generator python-wstool build-essential
+	apt-get -y install python-rosinstall python-rosinstall-generator python-wstool build-essential --allow-unauthenticated
 
 # ROS komponensek telepítése
-RUN apt-get -y install ros-kinetic-rosbridge-suite ros-kinetic-joint-state-publisher ros-kinetic-tf2-web-republisher ros-kinetic-xacro ros-kinetic-robot-state-publisher
+RUN apt-get -y install ros-kinetic-rosbridge-suite ros-kinetic-joint-state-publisher ros-kinetic-tf2-web-republisher ros-kinetic-xacro ros-kinetic-robot-state-publisher --allow-unauthenticated
 
 # NodeJs 8.x telepítése
 RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh && \
